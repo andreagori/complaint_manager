@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     container_name: complaintsdb
     environment:
       POSTGRES_USER: postgres
@@ -11,20 +11,28 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
 
   app:
     build: .
     container_name: customer_management_app
-    command: npm run dev
     ports:
-      - "3001:3000" # Changed port mapping from 3000:3000 to 3001:3000
+      - "3001:3001"
+    env_file:
+      - .env
     environment:
       DATABASE_URL: "postgresql://postgres:postgres@db:5432/complaintsdb"
+      PORT: 3001
     depends_on:
-      - db
-    working_dir: /usr/src/app
+      db:
+        condition: service_healthy
     volumes:
       - ./:/usr/src/app
+      - /usr/src/app/node_modules
 
 volumes:
   db_data:

@@ -24,7 +24,7 @@ export async function loginAdmin(email: string, password: string) {
 
     const token = jwt.sign(
         {
-            userId: user.id,
+            userId: user.user_Id,
             email: user.email,
         },
         process.env.JWT_SECRET!,

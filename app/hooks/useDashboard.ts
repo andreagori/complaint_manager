@@ -18,10 +18,15 @@ export const useDashboard = () => {
     complaints: []
   });
   const [loading, setLoading] = useState(true);
+  const [refreshLoading, setRefreshLoading] = useState(false); // Nuevo estado para refresh
   const [error, setError] = useState<string>('');
 
-  const fetchDashboardData = async () => {
-    setLoading(true);
+  const fetchDashboardData = async (isRefresh = false) => {
+    if (isRefresh) {
+      setRefreshLoading(true);
+    } else {
+      setLoading(true);
+    }
     setError('');
 
     try {
@@ -53,9 +58,16 @@ export const useDashboard = () => {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
     } finally {
-      setLoading(false);
+      if (isRefresh) {
+        setRefreshLoading(false);
+      } else {
+        setLoading(false);
+      }
     }
   };
+
+  // Función para refresh que activa el loading overlay
+  const refreshData = () => fetchDashboardData(true);
 
   // Filtrar por fecha de creación
   const filterComplaintsByDate = (complaints: Complaint[], dateFilter: string): Complaint[] => {
@@ -111,12 +123,10 @@ export const useDashboard = () => {
   return {
     stats,
     loading,
+    refreshLoading, // Nuevo estado para el overlay
     error,
-    refreshData: fetchDashboardData,
+    refreshData,
     filterComplaintsByDate,
     filterComplaintsByDueDate
   };
 };
-
-// types/complaint.ts
-// The Complaint interface is imported above, so no need to redeclare it here.

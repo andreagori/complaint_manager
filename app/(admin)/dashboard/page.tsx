@@ -1,7 +1,9 @@
+"use client";
 import Image from "next/image";
-import GeneralDashboard from "../../components/generalDashboard";
+import GeneralDashboard from "../../components/dashboard/generalDashboard";
+import AccountButton from "../../components/accountButton";
 
-const page = () => {
+const DashboardPage = () => {
   return (
     <div
       className="min-h-screen relative"
@@ -13,7 +15,8 @@ const page = () => {
       }}
     >
       <div className="absolute inset-0 backdrop-blur-xs bg-black/10 z-0"></div>
-      <div className="absolute top-8 left-8 z-10">
+      
+      <div className="fixed top-8 left-8 z-50">
         <Image
           src="/ProjectLogo.svg"
           alt="Project Logo"
@@ -23,14 +26,17 @@ const page = () => {
         />
       </div>
 
+      <div className="fixed top-8 right-8 z-50">
+        <AccountButton />
+      </div>
+
       <div className="relative z-10 p-8">
-        {/* Aquí puedes agregar el contenido del dashboard */}
-        <div className="mt-15">
-        <GeneralDashboard />
+        <div className="mt-18">
+          <GeneralDashboard />
         </div>
       </div>
     </div>
   );
 };
 
-export default page;
+export default DashboardPage;

@@ -1,4 +1,5 @@
 "use client";
+// Check if this file and useComplaint are really different.
 import { useState } from 'react';
 import type { Complaint } from '@/types/complaint';
 

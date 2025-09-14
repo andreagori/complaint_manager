@@ -1,5 +1,5 @@
-import React from "react";
 import Image from "next/image";
+import GeneralDashboard from "../../components/generalDashboard";
 
 const page = () => {
   return (
@@ -24,8 +24,10 @@ const page = () => {
       </div>
 
       <div className="relative z-10 p-8">
-        <h1 className="text-6xl font-bold text-white pt-20">Dashboard</h1>
         {/* Aquí puedes agregar el contenido del dashboard */}
+        <div className="mt-15">
+        <GeneralDashboard />
+        </div>
       </div>
     </div>
   );

@@ -35,8 +35,19 @@ export async function createComplaint(data: CreateComplaintInput)
 * returns the created complaint object
 */
 export async function getAllComplaints() {
-    const complaints = await prisma.complaint.findMany();
+    const complaints = await prisma.complaint.findMany(
+      {include: {reviewedComplaints: true},
+    });
     return complaints;
+}
+
+/* 
+* Function to create a date without timezone issues
+*/
+function createDateFromString(dateString: string): Date {
+  // Tomar la fecha string y crear una fecha local sin timezone issues
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // month es 0-based en JavaScript
 }
 
 /* 
@@ -46,34 +57,62 @@ export async function getAllComplaints() {
 export async function updateComplaint(data: UpdateComplaintInput) {
   const { complaintId, status, dueDate, notes, userId } = data;
 
-  // Actualizamos los campos que lleguen
+  // Primero actualizamos el complaint
   const complaint = await prisma.complaint.update({
     where: { complaint_Id: complaintId },
     data: {
       ...(status && { status }),
     },
-    include: { reviewedComplaints: true },
   });
 
-  // Si status indica que debe haber ReviewedComplaint y no existe uno para este userId, creamos
-  if ((status === "in_progress" || status === "closed")) {
+  // Si hay dueDate o notes, manejamos el ReviewedComplaint
+  if (dueDate || notes || (status === "in_progress" || status === "closed")) {
+    // Verificar si ya existe un ReviewedComplaint para este complaint y usuario
     const existingReview = await prisma.reviewedComplaint.findFirst({
-      where: { complaintId: complaintId, userId },
+      where: { 
+        complaintId: complaintId, 
+        userId: userId 
+      },
     });
 
-    if (!existingReview) {
-      await prisma.reviewedComplaint.create({
-        data: {
-          complaintId,
-          userId,
-          dueDate: dueDate ? new Date(dueDate) : new Date(),
-          notes,
-        },
+    if (existingReview) {
+      // Actualizar el existente solo con los campos que se proporcionaron
+      const updateData: { dueDate?: Date; notes?: string | null } = {};
+      
+      if (dueDate) {
+        updateData.dueDate = createDateFromString(dueDate);
+      }
+      
+      if (notes !== undefined) {
+        updateData.notes = notes;
+      }
+
+      await prisma.reviewedComplaint.update({
+        where: { reviewedComplaint_Id: existingReview.reviewedComplaint_Id },
+        data: updateData,
       });
+    } else {
+      // Crear uno nuevo solo si se proporcionó dueDate o si el status requiere tracking
+      if (dueDate || (status === "in_progress" || status === "closed")) {
+        await prisma.reviewedComplaint.create({
+          data: {
+            complaintId,
+            userId,
+            dueDate: dueDate ? createDateFromString(dueDate) : new Date(),
+            notes: notes || null,
+          },
+        });
+      }
     }
   }
 
-  return complaint;
+  // Retornar el complaint actualizado con sus reviewedComplaints
+  const updatedComplaint = await prisma.complaint.findUnique({
+    where: { complaint_Id: complaintId },
+    include: { reviewedComplaints: true },
+  });
+
+  return updatedComplaint;
 }
 
 /* 

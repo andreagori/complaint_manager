@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User { // admin and staff users
+  user_Id  Int @id @default(autoincrement())
+  name  String
+  email String @unique
+  password  String
+  created_at  DateTime @default(now())
+  reviewedComplaints ReviewedComplaint[]
+}
+
+model Customer { // customers
+  customer_Id  Int @id @default(autoincrement())
+  fullname  String
+  email String  @unique
+  created_at  DateTime  @default(now())
+  complaints  Complaint[]
+}
+
+model Complaint { // customers complaints
+  complaint_Id Int @id @default(autoincrement())
+  title String
+  body  String
+  status  String  @default("open") // open, in_progress, closed.
+  created_at DateTime @default(now())
+  customerId  Int
+  customer Customer @relation(fields: [customerId], references: [customer_Id])
+  reviewedComplaints ReviewedComplaint[]
+}
+
+model ReviewedComplaint { // admin/staff reviewdComplaints.
+  reviewedComplaint_Id Int @id @default(autoincrement())
+  dueDate DateTime
+  notes String?
+  complaintId  Int
+  userId  Int
+  complaint Complaint @relation(fields: [complaintId], references: [complaint_Id])
+  user  User @relation(fields: [userId], references: [user_Id])
+}

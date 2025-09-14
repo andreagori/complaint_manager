@@ -2,9 +2,11 @@
 import Image from "next/image";
 import GeneralDashboard from "../../components/dashboard/generalDashboard";
 import AccountButton from "../../components/accountButton";
+import { ProtectedRoute } from "../../components/auth/ProtectedRoute";
 
 const DashboardPage = () => {
   return (
+    <ProtectedRoute>
     <div
       className="min-h-screen relative"
       style={{
@@ -36,6 +38,7 @@ const DashboardPage = () => {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

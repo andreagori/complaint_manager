@@ -22,11 +22,6 @@ export function useLogin() {
         throw new Error(error || "Login failed");
       }
 
-      // Guardar el email en localStorage
-      console.log("Login successful, saving email:", email);
-      localStorage.setItem("userEmail", email);
-      console.log("Email saved, verification:", localStorage.getItem("userEmail"));
-
       setLoading(false);
       return true;
     } catch (err: unknown) {

@@ -1,34 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ShineBorder } from "./magicui/shine-border";
 import { ShimmerButton } from "../components/magicui/shimmer-button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useLogin } from "../hooks/useLogin";
 
 export default function LoginForm() {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
+  const { login, loading, error } = useLogin();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.email || !form.password) {
-      setError("All fields are required.");
-      return;
+    const success = await login(email, password);
+    if (success) {
+      router.push("/dashboard");
     }
-    setError("");
-    router.push("/dashboard");
   };
 
   return (
@@ -57,8 +48,8 @@ export default function LoginForm() {
               type="email"
               id="email"
               name="email"
-              value={form.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg"
               style={{ borderColor: "var(--purple)", color: "black" }}
@@ -77,8 +68,8 @@ export default function LoginForm() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
-                value={form.password}
-                onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full border rounded-2xl px-3 py-2 pr-12 shadow-md text-lg"
                 style={{ borderColor: "var(--purple)", color: "black" }}

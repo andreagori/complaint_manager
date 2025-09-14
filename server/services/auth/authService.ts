@@ -10,25 +10,22 @@ import jwt from "jsonwebtoken";
 * Returns the JWT token if authentication is successful
 */
 export async function loginAdmin(email: string, password: string) {
-    const user = await prisma.user.findUnique({
-        where: { email }
-    });
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not set in environment variables");
+  }
 
-    if (!user) {
-        throw new Error("User not found");
-    }
-    const isPasswordValid = await bcrypt.compare(password, user.password!);
-    if (!isPasswordValid) {
-        throw new Error("Invalid password");
-    }
+  const user = await prisma.user.findUnique({ where: { email } });
 
-    const token = jwt.sign(
-        {
-            userId: user.user_Id,
-            email: user.email,
-        },
-        process.env.JWT_SECRET!,
-        { expiresIn: "3h" }
-    );
-    return token;
+  if (!user) throw new Error("User not found");
+
+  const isPasswordValid = await bcrypt.compare(password, user.password!);
+  if (!isPasswordValid) throw new Error("Invalid password");
+
+  const token = jwt.sign(
+    { userId: user.user_Id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "3h" }
+  );
+
+  return { token, user: { id: user.user_Id, name: user.name, email: user.email } };
 }

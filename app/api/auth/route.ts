@@ -10,8 +10,18 @@ import { loginAdmin } from "../../../server/services/auth/authService";
 export async function POST(request: Request) {
     try {
         const { email, password } = await request.json();
-        const token = await loginAdmin(email, password);
-        return NextResponse.json({ token }, { status: 200 });
+        const {token, user} = await loginAdmin(email, password);
+        const response = NextResponse.json({ user });
+        response.cookies.set({
+        name: "auth_token",
+        value: token,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 3, // 3 horas
+        path: "/",
+        sameSite: "lax",
+        });
+        return response;
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         return NextResponse.json({ error: errorMessage }, { status: 401 });

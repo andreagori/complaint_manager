@@ -1,10 +1,9 @@
 // ENDPOINT: /api/complaints
-import { POSTComplaint, GETComplaints} from "@/server/controllers/complaintController";
+import { NextRequest } from "next/server";
+import { POSTComplaint, GETComplaints } from "@/server/controllers/complaintController";
 
-export async function POST(request: Request) {
-    return await POSTComplaint(request);
-}
+export const GET = GETComplaints; 
 
-export async function GET() {
-    return await GETComplaints();
-}
+export const POST = async (req: NextRequest) => {
+  return POSTComplaint(req); 
+};

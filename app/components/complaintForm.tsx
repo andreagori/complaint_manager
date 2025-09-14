@@ -3,14 +3,16 @@ import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { ShineBorder } from "./magicui/shine-border";
 import { ShimmerButton } from "./magicui/shimmer-button";
 import { Card, CardContent, CardHeader } from "./ui/card";
+import { useComplaint } from "../hooks/useComplaint";
+import type { CreateComplaintInput, Complaint } from "@/types/complaint";
 
-interface ComplaintFormProps {
-  onSubmit?: () => void;
-}
-
-export interface ComplaintFormRef {
+type ComplaintFormRef = {
   clearForm: () => void;
-}
+};
+
+type ComplaintFormProps = {
+  onSubmit?: (result: Complaint | null) => void;
+};
 
 const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
   ({ onSubmit }, ref) => {
@@ -22,40 +24,67 @@ const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
     });
     const [error, setError] = useState("");
 
+    // Hook de nuestro servicio
+    const { createComplaint, loading } = useComplaint();
+
     const clearForm = () => {
-      setForm({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
+      setForm({ name: "", email: "", subject: "", message: "" });
+      setError("");
     };
 
-    useImperativeHandle(ref, () => ({
-      clearForm,
-    }));
+    useImperativeHandle(ref, () => ({ clearForm }));
 
     const handleChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
       setForm({ ...form, [e.target.name]: e.target.value });
+      // Limpiar error cuando el usuario empiece a escribir
+      if (error) setError("");
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      console.log("Form submitted");
 
+      // Validación simple
       if (!form.name || !form.email || !form.subject || !form.message) {
         setError("All fields are required.");
         return;
       }
+
+      // Validación de email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(form.email)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+
       setError("");
 
-      console.log("All fields valid, calling onSubmit");
+      try {
+        // Transformar datos del formulario al formato CreateComplaintInput
+        const complaintData: CreateComplaintInput = {
+          fullname: form.name,
+          customerEmail: form.email,
+          title: form.subject,
+          body: form.message,
+        };
 
-      if (onSubmit) {
-        console.log("Calling onSubmit now");
-        onSubmit();
+        const result = await createComplaint(complaintData);
+
+        if (result) {
+          clearForm(); // limpiar formulario al enviar
+          if (onSubmit) onSubmit(result); // callback opcional
+        } else {
+          // Si result es null, el error ya está manejado en el hook
+          if (onSubmit) onSubmit(null);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || "Failed to submit complaint.");
+        } else {
+          setError("Failed to submit complaint.");
+        }
+        if (onSubmit) onSubmit(null);
       }
     };
 
@@ -67,10 +96,7 @@ const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
           duration={15}
         />
         <CardHeader>
-          <h2
-            className="text-3xl font-bold text-center pt-2"
-            style={{ color: "var(--purple)" }}
-          >
+          <h2 className="text-3xl font-bold text-center pt-2" style={{ color: "var(--purple)" }}>
             Submit Your Complaint
           </h2>
           <p className="text-lg text-center text-gray-600 italic -pt-2">
@@ -80,14 +106,15 @@ const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
         <CardContent className="p-10 pt-0">
           <form onSubmit={handleSubmit} className="text-2xl">
             {error && (
-              <p className="mb-2" style={{ color: "var(--purple)" }}>
-                {error}
-              </p>
+              <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+                <p className="text-red-600 text-lg">{error}</p>
+              </div>
             )}
+            
             <div className="mb-8">
-              <label
-                className="block mb-1 font-medium"
-                htmlFor="name"
+              <label 
+                className="block mb-1 font-medium" 
+                htmlFor="name" 
                 style={{ color: "var(--purple)" }}
               >
                 * Full Name:
@@ -99,14 +126,16 @@ const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg"
+                disabled={loading}
+                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ borderColor: "var(--purple)", color: "black" }}
               />
             </div>
+
             <div className="mb-8">
-              <label
-                className="block mb-1 font-medium"
-                htmlFor="email"
+              <label 
+                className="block mb-1 font-medium" 
+                htmlFor="email" 
                 style={{ color: "var(--purple)" }}
               >
                 * Email:
@@ -118,14 +147,16 @@ const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg"
+                disabled={loading}
+                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ borderColor: "var(--purple)", color: "black" }}
               />
             </div>
+
             <div className="mb-8">
-              <label
-                className="block mb-1 font-medium"
-                htmlFor="subject"
+              <label 
+                className="block mb-1 font-medium" 
+                htmlFor="subject" 
                 style={{ color: "var(--purple)" }}
               >
                 * Title:
@@ -137,14 +168,16 @@ const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
                 value={form.subject}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg"
+                disabled={loading}
+                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ borderColor: "var(--purple)", color: "black" }}
               />
             </div>
+
             <div className="mb-8">
-              <label
-                className="block mb-1 font-medium"
-                htmlFor="message"
+              <label 
+                className="block mb-1 font-medium" 
+                htmlFor="message" 
                 style={{ color: "var(--purple)" }}
               >
                 * Message:
@@ -155,13 +188,20 @@ const ComplaintForm = forwardRef<ComplaintFormRef, ComplaintFormProps>(
                 value={form.message}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg"
+                disabled={loading}
+                rows={4}
+                className="w-full border rounded-2xl px-3 py-2 shadow-md text-lg disabled:opacity-50 disabled:cursor-not-allowed resize-none"
                 style={{ borderColor: "var(--purple)", color: "black" }}
               />
             </div>
-            <ShimmerButton className="shadow-2xl w-full" type="submit">
+
+            <ShimmerButton 
+              className="shadow-2xl w-full" 
+              type="submit" 
+              disabled={loading}
+            >
               <span className="whitespace-pre-wrap text-center text-2xl font-medium leading-none tracking-wide text-white">
-                Submit
+                {loading ? "Submitting..." : "Submit"}
               </span>
             </ShimmerButton>
           </form>

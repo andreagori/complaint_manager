@@ -98,7 +98,11 @@ npm run dev
 Abre http://localhost:3000
 
 ## Problemas comunes
-
+- There is a probability of getting a mistake in tableComplaints.
+Is this line:
+import { ComplaintModal } from './complaintModal';
+Change it to 
+import { ComplaintModal } from './ComplaintModal';
 - Prisma P1001 (no conecta a BD):
   - Verifica DATABASE_URL (localhost:5432) y que el servicio db esté corriendo (`docker-compose ps`).
 - Seed falla:

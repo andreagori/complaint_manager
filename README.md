@@ -1,4 +1,4 @@
-# Customer Management
+# Complaint Management
 
 Plataforma web para gestionar clientes y quejas, con autenticación, panel de administración y API sobre Next.js. Incluye base de datos PostgreSQL y ORM con Prisma. Puede ejecutarse con Docker (recomendado si no tienes nada instalado) o de forma local.
 

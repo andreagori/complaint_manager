@@ -81,9 +81,10 @@ npm i
 *Aqui es importante tener abierto la aplicacion de Docker Desktop para que el comando funcione*
 
 ```bash
+npx prisma generate
 docker-compose up --build seed
 ```
-
+*Esperar 30 segundos*
 Al terminar el seed, deja la base activa en segundo plano:
 
 ```bash

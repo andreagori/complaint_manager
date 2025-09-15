@@ -21,7 +21,7 @@
 
 import React, { useState } from 'react';
 import { Search, ChevronDown, ChevronUp, Edit, Calendar } from 'lucide-react';
-import { ComplaintModal } from './complaintModal';
+import { ComplaintModal } from './ComplaintModal';
 import type { Complaint } from '@/types/complaint';
 
 interface TableComplaintsProps {

@@ -84,15 +84,17 @@ npm i
 npx prisma generate
 docker-compose up --build seed
 ```
-*Esperar 30 segundos*
-Al terminar el seed, deja la base activa en segundo plano:
-
+*Esperar 30/60 segundos*
+Al terminar el seed, es muy probable que te de un 
+``bash
+return 1
+``
+Ignora este aspecto y presiona la combinación de teclas CTRL + C
+Despues deja la base activa en segundo plano con el siguiente comando:
 ```bash
 docker-compose up -d db
 ```
-
-## 4) Ejecutar la aplicación en desarrollo
-
+## 4) Ejecutar la aplicación
 ```bash
 npm run dev
 ```

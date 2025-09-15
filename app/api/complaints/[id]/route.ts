@@ -44,7 +44,8 @@ import { PATCHComplaint } from "@/server/controllers/complaintController";
 
 export async function PATCH(
   req: NextRequest, 
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params;
   return PATCHComplaint({ params })(req);
 }

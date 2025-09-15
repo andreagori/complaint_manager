@@ -18,10 +18,11 @@
  * - LoginForm: component that handles the login form UI and logic.
  */
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import LoginForm from '../../components/loginForm'
 import Image from 'next/image'
 import Link from 'next/link'
+import Loading from '../../components/loading'
 
 export default function page() {
   return (
@@ -30,7 +31,7 @@ export default function page() {
       style={{ backgroundColor: "var(--cream)" }}
     >
       <div className="flex flex-col items-center gap-8">
-      <Link href="/">
+        <Link href="/">
           <Image
             src="/ProjectLogoV2.svg"
             alt="Project Logo"
@@ -38,9 +39,12 @@ export default function page() {
             height={80}
             className="mb-4"
           />
-      </Link>
-      <LoginForm />
-    </div>
+        </Link>
+
+        <Suspense fallback={<Loading isVisible={true} />}>
+          <LoginForm />
+        </Suspense>
+      </div>
     </div>
   )
 }

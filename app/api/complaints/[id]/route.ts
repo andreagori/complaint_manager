@@ -46,6 +46,5 @@ export async function PATCH(
   req: NextRequest, 
   { params }: { params: { id: string } }
 ) {
-  // Forward the request and complaint ID to the controller
   return PATCHComplaint({ params })(req);
 }

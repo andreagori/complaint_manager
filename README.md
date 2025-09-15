@@ -2,7 +2,6 @@
 
 Plataforma web para gestionar clientes y quejas, con autenticación, panel de administración y API sobre Next.js. Incluye base de datos PostgreSQL y ORM con Prisma. Puede ejecutarse con Docker (recomendado si no tienes nada instalado) o de forma local.
 
-- Dockerfile: [customer_management/Dockerfile](customer_management/Dockerfile)
 - Docker Compose: [customer_management/docker-compose.yml](customer_management/docker-compose.yml)
 - Script de arranque: [customer_management/start.sh](customer_management/start.sh)
 - Esquema Prisma: [customer_management/prisma/schema.prisma](customer_management/prisma/schema.prisma)
@@ -58,7 +57,11 @@ Flujo típico:
 UI (React) → API routes (Next.js en [app/api](customer_management/app/api)) → Controladores/Servicios ([server/](customer_management/server)) → Prisma → PostgreSQL.
 
 ## Pasos:
-## 1) Variables de entorno (.env en localhost)
+## Realizar un git clone a este repositorio
+```bash
+git clone <aqui el enlace>
+```
+## Variables de entorno (.env en localhost)
 
 Crea ./.env con:
 ```env
@@ -75,6 +78,7 @@ npm i
 ```
 
 ## 3) Preparar base de datos con Docker (migraciones + seed)
+*Aqui es importante tener abierto la aplicacion de Docker Desktop para que el comando funcione*
 
 ```bash
 docker-compose up --build seed
@@ -86,16 +90,16 @@ Al terminar el seed, deja la base activa en segundo plano:
 docker-compose up -d db
 ```
 
-- Detener base: `docker-compose down`
-- Borrar datos: `docker-compose down -v`
-
 ## 4) Ejecutar la aplicación en desarrollo
 
 ```bash
 npm run dev
 ```
+Abre http://localhost:3000 (probablemente en la terminal te dira el puerto).
 
-Abre http://localhost:3000
+- Detener base: `docker-compose down`
+- Borrar datos: `docker-compose down -v`
+
 
 ## Problemas comunes
 

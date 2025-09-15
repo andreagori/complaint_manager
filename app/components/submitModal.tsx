@@ -1,3 +1,13 @@
+/**
+ * SubmitModal Component
+ * 
+ * Displays a confirmation modal when a complaint is successfully submitted.
+ * Features:
+ * - Shows a thank you message and social media links.
+ * - Includes a "Back Home" button using `ShimmerButton`.
+ * - Fully client-side interactive component.
+ */
+
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/app/components/ui/card";

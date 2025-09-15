@@ -1,6 +1,27 @@
+/**
+ * ComplaintModal Component
+ * 
+ * Renders a modal for viewing and editing a single complaint.
+ * Features:
+ * - Displays complaint details, status, due date, and admin notes.
+ * - Allows updating status, due date, and notes with validation.
+ * - Uses `useComplaintActions` hook for API updates.
+ * - Calls `onUpdate` callback when a complaint is successfully updated.
+ * - Handles errors and loading state, provides visual feedback.
+ * 
+ * Props:
+ * - complaint: the complaint object to edit, or null if none.
+ * - isOpen: boolean to control modal visibility.
+ * - onClose: callback to close the modal.
+ * - onUpdate: callback invoked with the updated complaint.
+ * 
+ * Client-side only:
+ * - Uses React hooks (`useState`, `useEffect`) for state and lifecycle.
+ * - Includes interactive form elements and dynamic UI updates.
+ */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Save, Calendar, FileText, AlertCircle } from 'lucide-react';
 import type { Complaint } from '@/types/complaint';
 import { useComplaintActions } from '../hooks/useComplaintActions';
@@ -12,7 +33,7 @@ interface ComplaintModalProps {
   onUpdate: (updatedComplaint: Complaint) => void;
 }
 
-// Función para formatear fecha sin problemas de timezone
+// Format timezone-safe date for input[type="date"]
 const formatDateForInput = (dateString: string): string => {
   const date = new Date(dateString);
   const year = date.getFullYear();
@@ -39,18 +60,18 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({
       setStatus(complaint.status);
       setError('');
       
-      // Si hay reviewedComplaints, tomar los datos del más reciente
+      // if there are reviewed complaints, load the latest one's dueDate and notes
       if (complaint.reviewedComplaints && complaint.reviewedComplaints.length > 0) {
         const latestReview = complaint.reviewedComplaints[complaint.reviewedComplaints.length - 1];
-        
-        // Formatear la fecha para el input date sin problemas de timezone
+
+        // Format timezone-safe date for input[type="date"]
         if (latestReview.dueDate) {
           setDueDate(formatDateForInput(latestReview.dueDate));
         } else {
           setDueDate('');
         }
         
-        // Cargar las notas existentes
+        // load notes or empty string if none
         setNotes(latestReview.notes || '');
       } else {
         setDueDate('');
@@ -73,17 +94,15 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({
       status,
     };
 
-    // Solo incluir dueDate si se proporcionó
+    // only include dueDate if provided
     if (dueDate) {
       updateData.dueDate = dueDate;
     }
 
-    // Solo incluir notes si se proporcionaron (permitir string vacío para borrar notas)
+    // only include notes if provided (allow empty string to clear notes)
     if (notes !== undefined) {
       updateData.notes = notes.trim();
     }
-
-    console.log('Sending update data:', updateData); // Para debug
 
     const result = await updateComplaint(complaint.complaint_Id, updateData);
     

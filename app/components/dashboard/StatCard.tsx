@@ -1,4 +1,17 @@
-import React from 'react';
+/**
+ * StatCard Component
+ * 
+ * Displays a small card showing a numeric statistic with a title and icon.
+ * 
+ * Props:
+ * - title: string — the card's title.
+ * - value: number — the numeric value to display.
+ * - icon: ReactNode — icon to display on the card.
+ * - color: string — primary color for the card border, value, and icon.
+ * 
+ * Client-side only:
+ * - Purely presentational; no state or hooks used.
+ */
 
 interface StatCardProps {
   title: string;

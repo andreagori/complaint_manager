@@ -1,3 +1,14 @@
+/**
+ * Auth Service - loginAdmin
+ *
+ * Handles admin authentication and JWT generation:
+ * - Verifies that JWT_SECRET is set in environment variables.
+ * - Finds the user by email using Prisma.
+ * - Validates the provided password against the hashed password using bcrypt.
+ * - If authentication succeeds, returns a JWT token valid for 3 hours and basic user info.
+ * - Throws an error if the user is not found or if the password is invalid.
+ */
+
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";

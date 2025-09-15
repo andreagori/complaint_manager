@@ -1,4 +1,17 @@
-import React from 'react';
+/**
+ * DashboardNavigation Component
+ * 
+ * Renders a horizontal navigation bar for the dashboard with buttons for each view.
+ * 
+ * Props:
+ * - activeView: the currently selected view ('dashboard' | 'complaints' | 'in_progress' | 'reviewed').
+ * - onViewChange: callback function triggered when a navigation button is clicked.
+ * 
+ * Client-side only:
+ * - Handles button click events and dynamic styling based on the active view.
+ */
+"use client";
+
 import { Home, List, FileText, Clock } from 'lucide-react';
 
 interface DashboardNavigationProps {

@@ -27,6 +27,108 @@ async function main() {
     } else {
         console.log("Admin user already exists");
     }
+    // Customers and complains
+    // - Customers: upsert por email 
+    // - Complaints:
+    //   Status: "open" | "in_progress" | "closed"
+    // ---------------------------------------------------------------------------------
+
+    // 1) Customers
+    const customers = [
+        { fullname: "Juan Pérez",  email: "juan.perez@example.com" },
+        { fullname: "María García", email: "maria.garcia@example.com" },
+        { fullname: "Luis López",   email: "luis.lopez@example.com" },
+    ];
+
+    // Upsert de customers x email 
+    for (const c of customers) {
+        await prisma.customer.upsert({
+            where: { email: c.email },
+            update: {},
+            create: c,
+        });
+    }
+    console.log("Customers upserted");
+
+    // 2) Complaints
+    const complaintsPlan: Array<{
+        customerEmail: string;
+        items: Array<{ title: string; body: string; status?: "open" | "in_progress" | "closed" }>;
+    }> = [
+        {
+            customerEmail: "juan.perez@example.com",
+            items: [
+                {
+                    title: "Entrega retrasada",
+                    body: "El pedido llegó más tarde de lo prometido.",
+                    status: "open",
+                },
+                {
+                    title: "Producto defectuoso",
+                    body: "El dispositivo no enciende al sacarlo de la caja.",
+                    status: "in_progress",
+                },
+            ],
+        },
+        {
+            customerEmail: "maria.garcia@example.com",
+            items: [
+                {
+                    title: "Cobro duplicado",
+                    body: "Se realizó un cargo doble en su tarjeta.",
+                    status: "closed",
+                },
+            ],
+        },
+        {
+            customerEmail: "luis.lopez@example.com",
+            items: [
+                {
+                    title: "Problemas con garantía",
+                    body: "No queda claro el periodo de cobertura.",
+                    status: "open",
+                },
+            ],
+        },
+    ];
+
+    // 3) Create de complaints x cliente
+    for (const plan of complaintsPlan) {
+        // Search customer 
+        const customer = await prisma.customer.findUnique({
+            where: { email: plan.customerEmail },
+            select: { customer_Id: true, email: true },
+        });
+
+        if (!customer) {
+            console.warn(`Cliente no encontrado: ${plan.customerEmail}. Se omiten sus complaints.`);
+            continue;
+        }
+
+        for (const item of plan.items) {
+            const existing = await prisma.complaint.findFirst({
+                where: {
+                    title: item.title,
+                    customerId: customer.customer_Id,
+                },
+                select: { complaint_Id: true },
+            });
+
+            if (existing) {
+                continue;
+            }
+
+            // Create the complaint and associate it
+            await prisma.complaint.create({
+                data: {
+                    title: item.title,
+                    body: item.body,
+                    status: item.status ?? "open",
+                    customer: { connect: { email: plan.customerEmail } },
+                },
+            });
+        }
+    }
 }
 
 main()

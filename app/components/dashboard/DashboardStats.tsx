@@ -1,4 +1,18 @@
-import React from 'react';
+/**
+ * DashboardStats Component
+ * 
+ * Displays a grid of statistic cards showing complaint counts by category.
+ * 
+ * Props:
+ * - totalComplaints: total number of complaints.
+ * - openComplaints: number of unseen/open complaints.
+ * - inProgressComplaints: number of complaints currently in progress.
+ * - closedComplaints: number of reviewed/closed complaints.
+ * 
+ * Client-side only:
+ * - Purely presentational component, renders static data passed via props.
+ */
+
 import { AlertTriangle, Clock, CheckCircle, Users } from 'lucide-react';
 import { StatCard } from './StatCard';
 

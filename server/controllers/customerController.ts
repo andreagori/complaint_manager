@@ -1,5 +1,20 @@
-// ENDPOINT: /api/customer
-// Controller
+/**
+ * Customers API Endpoints
+ *
+ * Provides operations for managing customers:
+ *
+ * - POST /api/customer → Creates a new customer.
+ *   Receives customer details in the request body and returns the created customer.
+ *   Returns status 201 on success, 500 on server error.
+ *
+ * - GET /api/customer → Retrieves all customers. Requires authentication.
+ *   Returns a JSON array of customers with status 200.
+ *
+ * Notes:
+ * - GET endpoint is wrapped with `withAuth` middleware to ensure only authenticated users can access.
+ * - POST endpoint currently does not require authentication but handles errors gracefully.
+ */
+
 import { NextResponse, NextRequest } from "next/server";
 import { createCustomer, getAllCustomers } from "../services/customerService";
 import { withAuth } from "@/lib/authHelpers";

@@ -1,5 +1,6 @@
-"use client";
-// Check if this file and useComplaint are really different.
+// This hook focuses solely on updating a complaint, including error handling and using `credentials: 'include'` for authentication.
+// It is similar to `useComplaint` but more specialized; use this hook for updating complaints while `useComplaint` can handle creating and other general actions.
+
 import { useState } from 'react';
 import type { Complaint } from '@/types/complaint';
 

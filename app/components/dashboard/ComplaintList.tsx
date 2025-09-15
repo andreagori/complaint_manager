@@ -1,4 +1,17 @@
-import React from 'react';
+/**
+ * ComplaintList Component
+ * 
+ * Displays a list of complaints with optional status filtering.
+ * Highlights nearest due dates with color coding.
+ * 
+ * Props:
+ * - complaints: array of Complaint objects to display.
+ * - title: string for the list title.
+ * - statusFilter: optional string to filter complaints by status.
+ * 
+ * Client-side only; handles UI rendering and filtering.
+ */
+
 import type { Complaint } from '@/types/complaint';
 
 interface ComplaintListProps {

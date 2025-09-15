@@ -1,6 +1,26 @@
+/**
+ * ComplaintsChart Component
+ * 
+ * Renders a line and area chart showing the number of complaints over time.
+ * Uses D3 for scales, line/area generation, and interactive tooltips.
+ * 
+ * Client-side only:
+ * - Requires "use client" because it uses React hooks indirectly via rendering interactive tooltips 
+ *   and DOM measurements, and D3 calculations run in the browser.
+ * 
+ * Props:
+ * - complaints: array of Complaint objects to visualize.
+ * - title: optional string for the chart title (default: "Complaints Over Time").
+ * 
+ * Behavior:
+ * - Groups complaints by hour, sorts chronologically.
+ * - Draws a line and shaded area to represent complaint counts.
+ * - Adds interactive tooltips on hover for each point.
+ * - Handles single-day or multi-day data formatting for tooltip labels.
+ */
+
 "use client";
 
-import React from "react";
 import {
   scaleTime,
   scaleLinear,

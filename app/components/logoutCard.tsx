@@ -1,15 +1,23 @@
+/**
+ * LogoutCard Component
+ * 
+ * Displays a card with user info and two actions: go back to dashboard or log out.
+ * Features:
+ * - Styled with `ShineBorder` and `ShimmerButton` for UI effects.
+ * - Receives callbacks for `onLogout` and `onGoBack`.
+ * - Fully client-side interactive component.
+ */
 "use client";
 import { Card, CardContent } from "./ui/card";
 import { ShineBorder } from "./magicui/shine-border";
 import { ShimmerButton } from "./magicui/shimmer-button";
 
 interface LogoutCardProps {
-  userEmail: string;
   onLogout: () => void;
   onGoBack: () => void;
 }
 
-export default function LogoutCard({ userEmail, onLogout, onGoBack }: LogoutCardProps) {
+export default function LogoutCard({ onLogout, onGoBack }: LogoutCardProps) {
   return (
     <Card className="relative overflow-hidden max-w-md w-full">
       <ShineBorder
@@ -35,13 +43,6 @@ export default function LogoutCard({ userEmail, onLogout, onGoBack }: LogoutCard
                 Administrator
               </p>
             </div>
-            <div className="bg-(--cream) rounded-xl p-2">
-              <p className="text-sm text-gray-600 font-medium -mb-1">Email</p>
-              <p className="text-lg font-semibold" style={{ color: "var(--dark-gray)" }}>
-                {userEmail || "Loading..."}
-              </p>
-            </div>
-
           </div>
 
           {/* Buttons */}

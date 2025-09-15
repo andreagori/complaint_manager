@@ -1,4 +1,18 @@
-// Service to create, retrieve, update, and delete complaints
+/**
+ * Complaint Service
+ *
+ * Provides functions to manage complaints and their associated customer and review data.
+ * Includes:
+ * 
+ * - createComplaint(data: CreateComplaintInput): Creates a complaint. Checks if the customer exists by email; if not, creates a new customer. Returns the created complaint object.
+ * - getAllComplaints(): Retrieves all complaints including their reviewedComplaints.
+ * - updateComplaint(data: UpdateComplaintInput): Updates complaint status, dueDate, or notes. Handles ReviewedComplaint creation or update based on status and provided data. Returns the updated complaint with reviewedComplaints.
+ * - addReviewedNotes(reviewedComplaintId: number, notes: string): Updates notes on a ReviewedComplaint. Returns the updated ReviewedComplaint.
+ * 
+ * Internal helper:
+ * - createDateFromString(dateString: string): Creates a local Date object from an ISO string without timezone issues.
+ */
+
 import prisma from "@/lib/prisma";
 import { createCustomer,getCustomerByEmail } from "./customerService";
 import { CreateComplaintInput, UpdateComplaintInput } from "./types/types";

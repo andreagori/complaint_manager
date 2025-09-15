@@ -1,3 +1,25 @@
+/**
+ * useDashboard Hook
+ *
+ * Manages fetching and filtering complaints data for the dashboard, including loading and error states:
+ * - stats → Holds counts of total, open, in-progress, and closed complaints, as well as the complaints list.
+ * - loading → Boolean indicating if initial data is being fetched.
+ * - refreshLoading → Boolean indicating if a refresh request is in progress.
+ * - error → String containing any error message.
+ * - refreshData() → Fetches the latest complaints data, setting refreshLoading state.
+ * - filterComplaintsByDate(complaints, dateFilter) → Filters complaints based on creation date ('today', 'week', 'month').
+ * - filterComplaintsByDueDate(complaints, filter) → Filters complaints based on due date ('today', 'week', 'month').
+ *
+ * Returns:
+ * - stats: Dashboard statistics and complaints list
+ * - loading: Boolean for initial loading state
+ * - refreshLoading: Boolean for refresh loading state
+ * - error: Error message if fetch fails
+ * - refreshData: Function to refresh complaints data
+ * - filterComplaintsByDate: Function to filter complaints by created date
+ * - filterComplaintsByDueDate: Function to filter complaints by due date
+ */
+
 import { useState, useEffect } from 'react';
 import type { Complaint } from '@/types/complaint';
 
@@ -66,10 +88,10 @@ export const useDashboard = () => {
     }
   };
 
-  // Función para refresh que activa el loading overlay
+  // refresh loading overlay
   const refreshData = () => fetchDashboardData(true);
 
-  // Filtrar por fecha de creación
+  // filter by creation date
   const filterComplaintsByDate = (complaints: Complaint[], dateFilter: string): Complaint[] => {
     if (dateFilter === 'all') return complaints;
 
@@ -96,7 +118,7 @@ export const useDashboard = () => {
     });
   };
 
-  // Filtrar por due date.
+  // Filter for due date.
   const filterComplaintsByDueDate = (complaints: Complaint[], filter: string): Complaint[] => {
     if (filter === 'all') return complaints;
 
@@ -123,7 +145,7 @@ export const useDashboard = () => {
   return {
     stats,
     loading,
-    refreshLoading, // Nuevo estado para el overlay
+    refreshLoading, 
     error,
     refreshData,
     filterComplaintsByDate,

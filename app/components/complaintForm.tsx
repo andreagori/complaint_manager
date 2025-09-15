@@ -1,12 +1,26 @@
+/**
+ * ComplaintForm Component
+ * 
+ * Renders a complaint submission form with fields: Full Name, Email, Title, and Message.
+ * Handles input validation, submission via `useComplaint` hook, and displays errors.
+ * Provides an imperative `clearForm` method through ref to reset the form externally.
+ * 
+ * Props:
+ * - onSubmit: optional callback invoked with the created Complaint object or null on failure.
+ * 
+ * Client-side only:
+ * - Uses React hooks (`useState`, `useImperativeHandle`) for form state and ref handling.
+ * - Uses interactive components: ShimmerButton and ShineBorder for UI effects.
+ */
 "use client";
-import React, { useState, forwardRef, useImperativeHandle } from "react";
+import { useState, forwardRef, useImperativeHandle } from "react";
 import { ShineBorder } from "./magicui/shine-border";
 import { ShimmerButton } from "./magicui/shimmer-button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { useComplaint } from "../hooks/useComplaint";
 import type { CreateComplaintInput, Complaint } from "@/types/complaint";
 
-type ComplaintFormRef = {
+export type ComplaintFormRef = {
   clearForm: () => void;
 };
 

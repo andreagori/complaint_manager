@@ -1,4 +1,15 @@
-"use client";
+/**
+ * useLogin Hook
+ *
+ * Handles user login with loading and error states:
+ * - login(email: string, password: string) → Sends POST request to /api/auth with credentials.
+ *   Returns true if login is successful, false otherwise.
+ *
+ * Returns:
+ * - login: Function to attempt login
+ * - loading: Boolean indicating if a login request is in progress
+ * - error: String | null containing any error message from the login attempt
+ */
 
 import { useState } from "react";
 

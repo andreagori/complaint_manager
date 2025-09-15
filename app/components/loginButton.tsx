@@ -1,3 +1,12 @@
+/**
+ * LoginButton Component
+ * 
+ * Renders a styled interactive button that navigates to the login page when clicked.
+ * 
+ * Client-side only:
+ * - Uses `useRouter` from Next.js for client-side navigation.
+ * - Depends on `InteractiveHoverButton` for hover effects.
+ */
 "use client";
 import { InteractiveHoverButton } from "../components/magicui/interactive-hover-button";
 import { useRouter } from "next/navigation";

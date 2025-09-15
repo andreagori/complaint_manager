@@ -1,4 +1,14 @@
-"use client";
+/**
+ * useAuth Hook
+ *
+ * Manages basic client-side authentication state:
+ * - Retrieves the currently logged-in user's email from localStorage.
+ * - Provides a logout function that clears localStorage and auth cookie, then redirects to /login.
+ *
+ * Returns:
+ * - userEmail: string – the email of the logged-in user (empty string if none).
+ * - logout: () => void – function to log out the user.
+ */
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -10,13 +20,13 @@ export function useAuth() {
   const router = useRouter();
 
   const logout = () => {
-    // Limpiar localStorage
+    // clean localStorage
     localStorage.removeItem('userEmail');
     
-    // Limpiar cookie con el nombre correcto: auth_token
+    // clean cookie
     document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     
-    // Redirigir al login
+    // route to login
     router.push('/login');
   };
 

@@ -1,5 +1,23 @@
-// ENDPOINT: /api/complaints
-// Controller
+/**
+ * Complaints API Endpoints
+ *
+ * Provides authenticated CRUD operations for complaints:
+ *
+ * - POST /api/complaints → Creates a new complaint associated with a customer.
+ *   Receives complaint details in the request body and returns the created complaint.
+ *
+ * - GET /api/complaints → Retrieves all complaints. Requires authentication.
+ *   Returns a JSON array of complaints.
+ *
+ * - PATCH /api/complaints/:id → Updates a specific complaint by ID. Requires authentication.
+ *   Receives partial complaint data in the request body and returns the updated complaint.
+ *
+ * Notes:
+ * - All endpoints are wrapped with `withAuth` middleware to ensure only authenticated users can access.
+ * - POST and PATCH return appropriate HTTP status codes: 201 for creation, 200 for successful retrieval or update.
+ * - PATCH validates the complaint ID and merges user info for auditing.
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { createComplaint, getAllComplaints, updateComplaint } from "../services/complaintService";
 import { UpdateComplaintInput } from "../services/types/types";

@@ -1,3 +1,22 @@
+/**
+ * TableComplaints Component
+ *
+ * Displays a fully interactive table of complaints with:
+ * - Search and filters by created date and due date.
+ * - Sorting by Complaint ID (ascending/descending).
+ * - Row highlighting and hover effects.
+ * - Status and due date coloring for easy visualization.
+ * - Truncated text with tooltips for long titles/messages (optional).
+ * - Clicking a row opens a modal to edit the complaint.
+ * - Updates local state and triggers parent callbacks on edit.
+ *
+ * Props:
+ * - complaints: Complaint[] – the list of complaints to display.
+ * - filterComplaintsByDate: function to filter by created date.
+ * - filterComplaintsByDueDate: function to filter by due date.
+ * - onComplaintUpdate: callback fired when a complaint is updated.
+ */
+
 "use client";
 
 import React, { useState } from 'react';
@@ -10,7 +29,6 @@ interface TableComplaintsProps {
   filterComplaintsByDate: (complaints: Complaint[], dateFilter: string) => Complaint[];
   filterComplaintsByDueDate: (complaints: Complaint[], dueDateFilter: string) => Complaint[];
   onComplaintUpdate: () => void;
-  showStatusFilter?: boolean; // Nueva prop para controlar la visibilidad del filtro de estado
 }
 
 export const TableComplaints: React.FC<TableComplaintsProps> = ({ 
@@ -18,10 +36,8 @@ export const TableComplaints: React.FC<TableComplaintsProps> = ({
   filterComplaintsByDate, 
   filterComplaintsByDueDate,
   onComplaintUpdate,
-  showStatusFilter = true // Valor por defecto true
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dateFilter, setDateFilter] = useState<string>('all');
   const [dueDateFilter, setDueDateFilter] = useState<string>('all');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -95,27 +111,26 @@ export const TableComplaints: React.FC<TableComplaintsProps> = ({
     onComplaintUpdate();
   };
 
-  // Aplicar filtros y ordenamiento
+  // Apply filters and sorting
   let filteredComplaints = localComplaints;
 
-  // Filtrar por fecha de creación
+  // Filter by created date
   filteredComplaints = filterComplaintsByDate(filteredComplaints, dateFilter);
 
-  // Filtrar por due date
+  // Filter by due date
   filteredComplaints = filterComplaintsByDueDate(filteredComplaints, dueDateFilter);
 
-  // Filtrar por búsqueda y status
+  // Filter by search and status
   filteredComplaints = filteredComplaints.filter(complaint => {
     const matchesSearch = complaint.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          complaint.body.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          complaint.complaint_Id.toString().toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = statusFilter === 'all' || complaint.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
+
+    return matchesSearch;
   });
 
-  // Ordenar por ID
+  // Order by ID
   filteredComplaints = [...filteredComplaints].sort((a, b) => {
     if (sortOrder === 'asc') {
       return a.complaint_Id - b.complaint_Id;
@@ -148,27 +163,6 @@ export const TableComplaints: React.FC<TableComplaintsProps> = ({
                   } as React.CSSProperties}
                 />
               </div>
-
-              {/* Status Filter - Solo mostrar si showStatusFilter es true */}
-              {showStatusFilter && (
-                <div className="relative min-w-[140px]">
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:border-transparent w-full"
-                    style={{ 
-                      '--tw-ring-color': 'var(--purple)',
-                      '--tw-ring-opacity': '0.5'
-                    } as React.CSSProperties}
-                  >
-                    <option value="all">All Status</option>
-                    <option value="open">Open</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="closed">Closed</option>
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
-                </div>
-              )}
             </div>
 
             {/* Grupo derecho: Date filters */}

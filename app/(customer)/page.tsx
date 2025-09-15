@@ -1,6 +1,36 @@
+/**
+ * Home Component
+ * 
+ * This component represents the main landing page where users can submit complaints.
+ * It includes a complaint form, login button, animated text, and a submit confirmation modal.
+ * 
+ * Server-side / Auth Handling:
+ * - This page does not fetch server data directly but interacts with server-side logic
+ *   through the `ComplaintForm` component when a user submits a complaint.
+ * - `ComplaintForm`  sends the complaint data to a backend API, which stores it
+ *   or processes it accordingly.
+ * - `LoginButton` trigger authentication-related server calls if the user needs to log in.
+ * - The `SubmitModal` is shown after submission to indicate success, reflecting server-side
+ *   acknowledgment 
+ * 
+ * Client-side / UI Handling:
+ * - Uses `useState` to manage modal visibility (`isModalOpen`).
+ * - Uses `useRef` to interact with the `ComplaintForm` instance for clearing the form after submission.
+ * - Handles form submission via `handleFormSubmit`, which opens the modal.
+ * - Handles modal closure and form reset via `handleCloseModal`.
+ * 
+ * Dependencies:
+ * - React hooks: `useState`, `useRef`
+ * - ComplaintForm: form component for user complaints
+ * - LoginButton: handles user login
+ * - SubmitModal: modal displayed after complaint submission
+ * - TypingAnimation: animated typing effect for text
+ * - Next.js `Image`: optimized image rendering
+ */
+
 "use client";
 import { useState, useRef } from "react";
-import ComplaintForm, { ComplaintFormRef } from "../components/complaintForm";
+import ComplaintForm, {ComplaintFormRef} from "../components/complaintForm";
 import LoginButton from "../components/loginButton";
 import SubmitModal from "../components/submitModal";
 import { TypingAnimation } from "../components/magicui/typing-animation";
@@ -10,15 +40,13 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const formRef = useRef<ComplaintFormRef>(null);
 
+  // Opens the submit modal after complaint form submission
   const handleFormSubmit = () => {
-    console.log("handleFormSubmit called"); 
-    console.log("Setting modal to open"); 
     setIsModalOpen(true);
-    console.log("Modal state should be true now"); 
   };
 
+  // Closes the modal and clears the complaint form
   const handleCloseModal = () => {
-    console.log("Closing modal and clearing form"); 
     setIsModalOpen(false);
     if (formRef.current) {
       formRef.current.clearForm();

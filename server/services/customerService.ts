@@ -1,3 +1,12 @@
+/**
+ * Customer Service
+ *
+ * Provides functions to manage customer data:
+ * 
+ * - createCustomer(data: CreateCustomerInput): Creates a new customer with fullname and email. Returns the created customer object.
+ * - getCustomerByEmail(email: string): Searches for a customer by email. Returns the customer object or null if not found.
+ * - getAllCustomers(): Retrieves all customers. Returns an array of customer objects.
+ */
 import prisma from "@/lib/prisma";
 import { CreateCustomerInput } from "./types/types";
 

@@ -1,4 +1,16 @@
-"use client";
+/**
+ * useComplaint Hook
+ *
+ * Handles CRUD operations for complaints with built-in loading and error states:
+ * - createComplaint(data: CreateComplaintInput) → Creates a new complaint via POST /api/complaints.
+ * - updateComplaint(data: UpdateComplaintInput) → Updates an existing complaint via PATCH /api/complaints/:id.
+ * 
+ * Returns:
+ * - createComplaint: function to create a complaint
+ * - updateComplaint: function to update a complaint
+ * - loading: boolean indicating if a request is in progress
+ * - error: string | null containing any error message
+ */
 
 import { useState } from "react";
 import { CreateComplaintInput, Complaint, UpdateComplaintInput } from "@/types/complaint";

@@ -1,6 +1,22 @@
+/**
+ * GeneralDashboard Component
+ * 
+ * Main dashboard view for displaying complaints data, statistics, charts, and tables.
+ * Handles multiple views: general statistics, all complaints, in-progress, and reviewed complaints.
+ * 
+ * Client-side only:
+ * - Uses React hooks (`useState`) for active view state.
+ * - Fetches and refreshes dashboard data via the `useDashboard` hook.
+ * - Renders child components: DashboardNavigation, DashboardStats, ComplaintsChart, ComplaintList, TableComplaints, and Loading.
+ * - Handles error and loading states with fallback UI.
+ * 
+ * Behavior:
+ * - Switching between views updates the displayed content.
+ * - Provides refresh buttons and interactive filtering for complaints.
+ */
 "use client";
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDashboard } from '../../hooks/useDashboard';
 import { TableComplaints } from '../tableComplaints';
 import { ShimmerButton } from '../magicui/shimmer-button';
@@ -83,7 +99,6 @@ export function GeneralDashboard() {
               filterComplaintsByDate={filterComplaintsByDate}
               filterComplaintsByDueDate={filterComplaintsByDueDate}
               onComplaintUpdate={refreshData}
-              showStatusFilter={true}
             />
           </>
         );
@@ -97,7 +112,6 @@ export function GeneralDashboard() {
               filterComplaintsByDate={filterComplaintsByDate}
               filterComplaintsByDueDate={filterComplaintsByDueDate}
               onComplaintUpdate={refreshData}
-              showStatusFilter={false}
             />
           </>
         );
@@ -111,7 +125,6 @@ export function GeneralDashboard() {
               filterComplaintsByDate={filterComplaintsByDate}
               filterComplaintsByDueDate={filterComplaintsByDueDate}
               onComplaintUpdate={refreshData}
-              showStatusFilter={false}
             />
           </>
         );

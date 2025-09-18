@@ -81,19 +81,11 @@ npm i
 *Aqui es importante tener abierto la aplicacion de Docker Desktop para que el comando funcione*
 
 ```bash
+docker compose up -d db
 npx prisma generate
-docker-compose up --build seed
-```
-*Esperar 30/60 segundos*
-Al terminar el seed, es muy probable que te de un 
-``bash
-return 1
-``
-Ignora este aspecto y presiona la combinación de teclas CTRL + C
-Despues deja la base activa en segundo plano con el siguiente comando:
-```bash
-docker-compose up -d db
-```
+npx prisma migrate deploy
+npx tsx prisma/seed.ts
+
 ## 4) Ejecutar la aplicación
 ```bash
 npm run dev

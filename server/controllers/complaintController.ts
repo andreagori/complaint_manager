@@ -28,7 +28,7 @@ import { withAuth } from "../../lib/authHelpers";
 * request: Request - The incoming request object containing complaint details.
 * Returns: NextResponse - A JSON response with the created complaint or an error message.
 */
-export const POSTComplaint = withAuth(async (req: NextRequest, user) => {
+export const POSTComplaint = (async (req: NextRequest) => {
   const data = await req.json();
   const complaint = await createComplaint(data);
   return NextResponse.json(complaint, { status: 201 });
